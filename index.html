@@ -1,0 +1,2193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intelligent Food Shelf Life Monitoring System</title>
+    <style>
+       * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-green: #10b981;
+    --dark-green: #047857;
+    --light-green: #d1fae5;
+    --accent-green: #34d399;
+    --pale-green: #ecfdf5;
+    --orange-accent: #f97316;
+    --text-dark: #1f2937;
+    --text-gray: #6b7280;
+    --bg-white: #ffffff;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: var(--text-dark);
+    background: #fafafa;
+}
+
+.blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.7;
+    z-index: 0;
+    animation: blobFloat 20s infinite ease-in-out;
+}
+
+.blob-1 {
+    width: 400px;
+    height: 400px;
+    background: var(--accent-green);
+    top: -200px;
+    right: -200px;
+}
+
+.blob-2 {
+    width: 300px;
+    height: 300px;
+    background: var(--orange-accent);
+    bottom: -150px;
+    left: -150px;
+    animation-delay: -5s;
+}
+
+.blob-3 {
+    width: 350px;
+    height: 350px;
+    background: var(--light-green);
+    top: 50%;
+    left: -100px;
+    animation-delay: -10s;
+}
+
+@keyframes blobFloat {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(50px, -50px) scale(1.1); }
+    66% { transform: translate(-30px, 30px) scale(0.9); }
+}
+
+nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 1rem 5%;
+    z-index: 1000;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--dark-green);
+}
+
+.logo-icon {
+    font-size: 2rem;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+    align-items: center;
+}
+
+.nav-links a {
+    color: var(--text-gray);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.nav-links a:hover {
+    color: var(--primary-green);
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--primary-green);
+    transition: width 0.3s ease;
+}
+
+.nav-links a:hover::after {
+    width: 100%;
+}
+
+.contact-btn {
+    background: var(--dark-green);
+    color: white !important;
+    padding: 0.7rem 1.8rem;
+    border-radius: 30px;
+    transition: all 0.3s ease;
+}
+
+.contact-btn:hover {
+    background: var(--primary-green);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+}
+
+.contact-btn::after {
+    display: none;
+}
+
+.menu-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.menu-toggle span {
+    width: 25px;
+    height: 2px;
+    background: var(--text-dark);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+.hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 5rem;
+    padding: 8rem 5% 4rem;
+    margin: 0;
+    position: relative;
+}
+
+.hero::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100vw;
+    height: 100vh;
+    background: url('images/back.jpg') center/cover no-repeat fixed;
+    z-index: -2;
+}
+
+.hero::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.2));
+    backdrop-filter: saturate(1.3);
+    z-index: -1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.hero-image {
+    position: relative;
+    z-index: 2;
+}
+
+@keyframes fadeInLeft {
+    from { opacity: 0; transform: translateX(-50px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.hero-title-small {
+    font-size: 2.5rem;
+    color: var(--text-dark);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.hero-title-main {
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+    line-height: 1.1;
+}
+
+.hero-title-accent {
+    font-size: 3.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--primary-green), var(--orange-accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hero-description {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--text-dark);
+    line-height: 1.8;
+    margin: 2rem 0;
+    max-width: 600px;
+}
+
+.hero-tags {
+    display: flex;
+    gap: 1rem;
+    margin: 2rem 0;
+    flex-wrap: wrap;
+}
+
+.tag {
+    background: var(--pale-green);
+    color: var(--dark-green);
+    padding: 0.5rem 1.2rem;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2.5rem;
+}
+
+.btn-primary {
+    background: var(--dark-green);
+    color: white;
+    padding: 1rem 2.5rem;
+    border: none;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(4, 120, 87, 0.3);
+}
+
+.btn-primary:hover {
+    background: var(--primary-green);
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(16, 185, 129, 0.4);
+}
+
+.btn-secondary {
+    background: white;
+    color: var(--text-dark);
+    padding: 1rem 2.5rem;
+    border: 2px solid var(--text-dark);
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background: var(--text-dark);
+    color: white;
+    transform: translateY(-3px);
+}
+
+@keyframes fadeInRight {
+    from { opacity: 0; transform: translateX(50px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.image-circle {
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent-green), var(--orange-accent));
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(16, 185, 129, 0.3);
+    animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+.image-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10rem;
+    overflow: hidden;
+}
+
+.image-placeholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.floating-badge {
+    position: absolute;
+    background: white;
+    padding: 1rem 1.5rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    font-weight: 700;
+    animation: badgeFloat 3s ease-in-out infinite;
+}
+
+@keyframes badgeFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.badge-1 {
+    top: 5%;
+    right: 12%;
+    background: var(--dark-green);
+    color: white;
+}
+
+.badge-2 {
+    bottom: 15%;
+    left: -50px;
+    animation-delay: -1.5s;
+}
+
+/* Full-width sections */
+section {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.services-section {
+    padding: 5rem 0;
+   background: var(--pale-green);
+    position: relative;
+}
+
+.section-header {
+    text-align: center;
+    margin: 0 auto 4rem;
+    max-width: 1400px;
+    padding: 0 5%;
+}
+
+.section-tag {
+    color: var(--primary-green);
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 1rem;
+}
+
+.section-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--text-dark);
+    margin-bottom: 1rem;
+}
+
+.section-description {
+    color: var(--text-gray);
+    font-size: 1.1rem;
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.8;
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 5%;
+}
+
+.service-card {
+    background: var(--pale-green);
+    padding: 2rem;
+    border-radius: 20px;
+    text-align: center;
+    transition: all 0.4s ease;
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+.service-card:hover {
+    transform: translateY(-10px);
+   background: var(--pale-green);
+    border-color: var(--primary-green);
+    box-shadow: 0 20px 50px rgba(16, 185, 129, 0.2);
+}
+
+.service-icon {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 1.5rem;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    transition: all 0.3s ease;
+}
+
+.service-card:hover .service-icon {
+    background: var(--primary-green);
+    transform: scale(1.1);
+}
+
+.service-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+}
+
+.service-text {
+    font-size: 0.9rem;
+    color: var(--text-gray);
+    line-height: 1.6;
+}
+
+.scope-section {
+background: var(--pale-green);
+    padding: 7rem 0;
+    background: #fafafa;
+}
+
+.scope-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 5%;
+}
+
+.scope-card {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    transition: all 0.4s ease;
+}
+
+.scope-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 60px rgba(16, 185, 129, 0.2);
+}
+
+.scope-icon {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, var(--pale-green), var(--light-green));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.scope-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 1rem;
+}
+
+.scope-text {
+    font-size: 0.95rem;
+    color: var(--text-gray);
+    line-height: 1.7;
+}
+
+.scope-text ul {
+    margin-top: 1rem;
+    padding-left: 1.5rem;
+}
+
+.scope-text li {
+    margin-bottom: 0.5rem;
+}
+
+.feature-section {
+    padding: 7rem 0;
+    background: var(--pale-green);
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: center;
+    padding: 0 5%;
+}
+
+.feature-image {
+    position: relative;
+}
+
+.feature-img-main {
+    width: 100%;
+    height: 500px;
+    background: linear-gradient(135deg, var(--light-green), var(--pale-green));
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8rem;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.feature-img-main img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.feature-badge {
+    position: absolute;
+    background: var(--dark-green);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 20px;
+    font-weight: 700;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.badge-top {
+    top: -30px;
+    left: -30px;
+}
+
+.badge-bottom {
+    bottom: -30px;
+    right: -30px;
+}
+
+.feature-content h2 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--text-dark);
+    margin-bottom: 1.5rem;
+    line-height: 1.3;
+}
+
+.feature-content p {
+    color: var(--text-gray);
+    font-size: 1.05rem;
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+}
+
+.feature-list {
+    list-style: none;
+    margin: 2rem 0;
+}
+
+.feature-list li {
+    padding: 0.8rem 0;
+    color: var(--text-gray);
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.feature-list li::before {
+    content: '✓';
+    background: var(--primary-green);
+    color: white;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.methodology-section {
+    padding: 7rem 0;
+    background: #fafafa;
+}
+
+.methodology-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 5%;
+}
+
+.methodology-card {
+    background: white;
+    padding: 3rem;
+    border-radius: 25px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    transition: all 0.4s ease;
+}
+
+.methodology-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 60px rgba(16, 185, 129, 0.15);
+}
+
+.methodology-number {
+    width: 50px;
+    height: 50px;
+    background: var(--primary-green);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+}
+
+.methodology-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 1rem;
+}
+
+.methodology-text {
+    color: var(--text-gray);
+    line-height: 1.8;
+    font-size: 0.95rem;
+}
+
+.stats-section {
+    background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+    padding: 5rem 0;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.stats-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3rem;
+    text-align: center;
+    padding: 0 5%;
+}
+
+.stat-item {
+    animation: fadeInUp 1s ease;
+}
+
+.stat-number {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    font-size: 1rem;
+    opacity: 0.9;
+    font-weight: 500;
+}
+
+.stat-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.timeline-section {
+    padding: 7rem 0;
+   background: var(--pale-green);
+}
+
+.timeline {
+    position: relative;
+    max-width: 1200px;
+    margin: 4rem auto;
+    padding: 0 5%;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, var(--primary-green), var(--accent-green));
+    transform: translateX(-50%);
+}
+
+.timeline-item {
+    display: flex;
+    margin-bottom: 4rem;
+    position: relative;
+}
+
+.timeline-item:nth-child(odd) {
+    flex-direction: row-reverse;
+}
+
+.timeline-content {
+    width: 45%;
+    background: white;
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    transition: all 0.4s ease;
+}
+
+.timeline-content:hover {
+    transform: scale(1.05);
+    box-shadow: 0 20px 60px rgba(16, 185, 129, 0.2);
+}
+
+.timeline-date {
+    display: inline-block;
+    background: var(--text-dark);
+    color: white;
+    padding: 0.4rem 1rem;
+    border-radius: 5px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.timeline-content h3 {
+    color: var(--dark-green);
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+.timeline-content p {
+    color: var(--text-gray);
+    line-height: 1.7;
+    margin-bottom: 1rem;
+}
+
+.timeline-dot {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 25px;
+    height: 25px;
+    background: var(--accent-green);
+    border: 5px solid white;
+    border-radius: 50%;
+    box-shadow: 0 0 30px rgba(16, 185, 129, 0.6);
+    z-index: 10;
+}
+
+.milestone-badge {
+    display: inline-block;
+    background: var(--light-green);
+    color: var(--dark-green);
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 30px;
+    background: #e5e7eb;
+    border-radius: 15px;
+    overflow: hidden;
+    margin-top: 1rem;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-green), var(--accent-green));
+    display: flex;
+    align-items: center;
+    transition: width 1s ease;
+}
+
+.tech-section {
+    padding: 7rem 0;
+    background: #fafafa;
+}
+
+.tech-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 2rem;
+    max-width: 1400px;
+    margin: 4rem auto 0;
+    padding: 0 5%;
+}
+
+.tech-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+}
+
+.tech-card:hover {
+    transform: translateY(-10px) scale(1.05);
+    box-shadow: 0 15px 40px rgba(16, 185, 129, 0.2);
+}
+
+.tech-icon-wrapper {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1rem;
+    background: linear-gradient(135deg, var(--pale-green), var(--light-green));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    overflow: hidden;
+    padding: 15px;
+}
+
+.tech-icon-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.tech-name {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.downloads-section {
+    padding: 7rem 0;
+     background: linear-gradient(135deg, var(--pale-green), var(--light-green));
+}
+
+.downloads-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 5%;
+}
+
+.download-card {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    transition: all 0.4s ease;
+    cursor: pointer;
+}
+
+.download-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 60px rgba(16, 185, 129, 0.2);
+}
+
+.download-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--primary-green), var(--accent-green));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    margin: 0 auto 1.5rem;
+    color: white;
+}
+
+.download-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 0.8rem;
+}
+
+.download-desc {
+    color: var(--text-gray);
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+}
+
+.download-btn {
+    background: var(--pale-green);
+    color: var(--dark-green);
+    padding: 0.8rem 2rem;
+    border: none;
+    border-radius: 25px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.download-btn:hover {
+    background: var(--primary-green);
+    color: white;
+    transform: scale(1.05);
+}
+
+.team-section {
+    padding: 7rem 0;
+    background: #fafafa;
+}
+
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3rem;
+    max-width: 1400px;
+    margin: 4rem auto 0;
+    padding: 0 5%;
+}
+
+.team-card {
+    background: white;
+    border-radius: 25px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    transition: all 0.4s ease;
+    cursor: pointer;
+}
+
+.team-card:hover {
+    transform: translateY(-15px);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+}
+
+.team-image-wrapper {
+    width: 100%;
+    height: 350px;
+    background: linear-gradient(135deg, var(--primary-green), var(--accent-green));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 5rem;
+    color: white;
+    overflow: hidden;
+}
+
+.team-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.team-info {
+    padding: 2rem;
+}
+
+.team-name {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+}
+
+.team-id {
+    font-size: 0.85rem;
+    color: var(--text-gray);
+    margin-bottom: 0.8rem;
+}
+
+.team-role {
+    display: inline-block;
+    background: var(--light-green);
+    color: var(--dark-green);
+    padding: 0.5rem 1.2rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.team-details {
+    color: var(--text-gray);
+    font-size: 0.9rem;
+    line-height: 1.7;
+}
+
+.contact-section {
+    padding: 7rem 0;
+	background: var(--pale-green);
+    background: linear-gradient(135deg, #fafafa, var(--pale-green));
+}
+
+.contact-container {
+    max-width: 700px;
+    margin: 0 auto;
+    background: white;
+    padding: 4rem;
+    border-radius: 30px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+    margin-bottom: 1.8rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.7rem;
+    color: var(--text-dark);
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+.form-group input,
+.form-group textarea {
+   width: 100%;
+    padding: 1.2rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 15px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary-green);
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+}
+
+.submit-btn {
+    width: 100%;
+    background: var(--dark-green);
+    color: white;
+    padding: 1.2rem;
+    border: none;
+    border-radius: 15px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.submit-btn:hover {
+    background: var(--primary-green);
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(16, 185, 129, 0.3);
+}
+
+footer {
+    background: var(--text-dark);
+    color: #9ca3af;
+    padding: 4rem 5% 2rem;
+}
+
+.footer-content {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 3rem;
+}
+
+.footer-logo {
+    font-size: 2rem;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.footer-desc {
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+}
+
+.footer-title {
+    color: white;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+}
+
+.footer-links {
+    list-style: none;
+}
+
+.footer-links li {
+    margin-bottom: 0.8rem;
+}
+
+.footer-links a {
+    color: #9ca3af;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: var(--primary-green);
+}
+
+.footer-bottom {
+    border-top: 1px solid #374151;
+    padding-top: 2rem;
+    text-align: center;
+}
+
+.reveal {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 0.8s ease;
+}
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .hero {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+    }
+
+    .hero-image {
+        order: -1;
+    }
+
+    .image-circle {
+        width: 400px;
+        height: 400px;
+        margin: 0 auto;
+    }
+
+    .services-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .scope-grid,
+    .downloads-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .methodology-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .tech-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .team-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .stats-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .footer-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .feature-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: flex;
+    }
+
+    .nav-links {
+        position: fixed;
+        top: 70px;
+        left: -100%;
+        flex-direction: column;
+        background: white;
+        width: 100%;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transition: left 0.3s ease;
+        align-items: flex-start;
+    }
+
+    .nav-links.active {
+        left: 0;
+    }
+
+    .hero-title-main,
+    .hero-title-accent {
+        font-size: 2.5rem;
+    }
+
+    .hero-title-small {
+        font-size: 2rem;
+    }
+
+    .image-circle {
+        width: 300px;
+        height: 300px;
+    }
+
+    .services-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .scope-grid,
+    .downloads-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .section-title {
+        font-size: 2rem;
+    }
+
+    .stats-container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .timeline::before {
+        left: 20px;
+    }
+
+    .timeline-item {
+        flex-direction: column !important;
+    }
+
+    .timeline-content {
+        width: 100%;
+        margin-left: 50px;
+    }
+
+    .timeline-dot {
+        left: 20px;
+    }
+
+    .tech-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .team-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .footer-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .contact-container {
+        padding: 2rem;
+    }
+
+        
+		
+    </style>
+</head>
+<body>
+    <!-- Decorative Blobs -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <span class="logo-icon">🍎</span>
+                <span>Freshify</span>
+            </div>
+            <div class="menu-toggle" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#scope">Project Scope</a></li>
+                <li><a href="#methodology">Methodology</a></li>
+                <li><a href="#technologies">Technologies</a></li>
+                <li><a href="#milestones">Milestones</a></li>
+                <li><a href="#downloads">Downloads</a></li>
+                <li><a href="#team">Team</a></li>
+                <li><a href="#contact" class="contact-btn">Contact Us</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1 class="hero-title-small">Welcome to</h1>
+            <h1 class="hero-title-main">Intelligent Food</h1>
+            <h1 class="hero-title-accent">Shelf Life Monitor</h1>
+            <p class="hero-description">
+                A user-friendly mobile application-based modular intelligence system designed to help households monitor food shelf life, reducing waste through AI, IoT, and machine learning technology.
+            </p>
+            <div class="hero-tags">
+                <span class="tag">AI-Powered</span>
+                <span class="tag">IoT Sensors</span>
+                <span class="tag">Real-time</span>
+                <span class="tag">Recipe Suggestions</span>
+            </div>
+            <div class="hero-buttons">
+                <button class="btn-primary" onclick="document.getElementById('services').scrollIntoView({behavior: 'smooth'})">Explore Project</button>
+                <button class="btn-secondary" onclick="document.getElementById('downloads').scrollIntoView({behavior: 'smooth'})">View Documents</button>
+            </div>
+        </div>
+
+        <div class="hero-image">
+            <div class="image-circle">
+                <div class="image-placeholder">
+                    <img src="images/back2.jfif" alt="Food Monitoring" onerror="this.parentElement.innerHTML='🍎'">
+                </div>
+            </div>
+            <div class="floating-badge badge-1">
+                <div>Spoilage</div>
+                <div style="font-size: 1.5rem;">Detection</div>
+            </div>
+            <div class="floating-badge badge-2">
+                <div style="color: var(--primary-green); font-size: 1.5rem;">Reduce</div>
+                <div style="color: var(--text-gray); font-size: 0.9rem;">Food Waste</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services-section reveal" id="services">
+        <div class="section-header">
+            <div class="section-tag">Core Modules</div>
+            <h2 class="section-title">What We Offer</h2>
+            <p class="section-description">
+                Four integrated modules working together for comprehensive household food management
+            </p>
+        </div>
+
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-icon">🔬</div>
+                <h3 class="service-title">Spoilage Detection</h3>
+                <p class="service-text">Real-time food freshness detection using MobileNetV2 and MQ-135 gas sensors</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">⏱️</div>
+                <h3 class="service-title">Shelf Life Estimation</h3>
+                <p class="service-text">AI-powered prediction for fruits, vegetables, homemade and packaged foods</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">📦</div>
+                <h3 class="service-title">Storage Compatibility</h3>
+                <p class="service-text">IoT sensors monitor ethylene levels and temperature to prevent spoilage</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">🍳</div>
+                <h3 class="service-title">Recipe Suggestions</h3>
+                <p class="service-text">Personalized recipes based on expiring ingredients and health profiles</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Scope Section -->
+    <section class="scope-section reveal" id="scope">
+        <div class="section-header">
+            <div class="section-tag">Project Scope</div>
+            <h2 class="section-title">Research Foundation</h2>
+            <p class="section-description">
+                Comprehensive research framework addressing global food waste challenges
+            </p>
+        </div>
+
+        <div class="scope-grid">
+            <div class="scope-card">
+                <div class="scope-icon">📚</div>
+                <h3 class="scope-title">Literature Review</h3>
+                <p class="scope-text">
+                    Analyzed CNN-based spoilage detection (VGG16, MobileNetV2), gas sensor monitoring (MQ-135, MQ-137), shelf-life prediction models (EfficientNetB2, Random Forest), and recipe recommendation systems (TF-IDF, collaborative filtering).
+                </p>
+            </div>
+
+            <div class="scope-card">
+                <div class="scope-icon">🔍</div>
+                <h3 class="scope-title">Research Gap</h3>
+                <p class="scope-text">
+                    Existing solutions lack integration of real-time IoT sensing with AI-driven predictions and user-friendly household interfaces. No comprehensive system combines visual detection, gas analysis, and personalized recommendations.
+                </p>
+            </div>
+
+            <div class="scope-card">
+                <div class="scope-icon">❗</div>
+                <h3 class="scope-title">Research Problem</h3>
+                <p class="scope-text">
+                    One-third of global food production is wasted, primarily in households due to poor storage, misunderstood expiration dates, and lack of real-time freshness monitoring systems.
+                </p>
+            </div>
+
+            <div class="scope-card">
+                <div class="scope-icon">💡</div>
+                <h3 class="scope-title">Proposed Solution</h3>
+                <p class="scope-text">
+                    Mobile-based intelligent system with four integrated modules: image and gas sensor-based spoilage detection, ML-powered shelf-life estimation, IoT storage compatibility management, and personalized recipe suggestions.
+                </p>
+            </div>
+
+            <div class="scope-card">
+                <div class="scope-icon">🎯</div>
+                <h3 class="scope-title">Research Objectives</h3>
+                <p class="scope-text">
+                    <ul>
+                        <li>Detect food spoilage in real-time using hybrid AI approach</li>
+                        <li>Estimate remaining shelf life with 80%+ accuracy</li>
+                        <li>Manage storage compatibility using IoT sensors</li>
+                        <li>Suggest health-conscious recipes for expiring food</li>
+                        <li>Reduce household food waste by 20-25%</li>
+                    </ul>
+                </p>
+            </div>
+
+            <div class="scope-card">
+                <div class="scope-icon">🌟</div>
+                <h3 class="scope-title">Key Innovation</h3>
+                <p class="scope-text">
+                    Hybrid approach combining image recognition (MobileNetV2), gas sensors (MQ-135 for ammonia), and ML-based predictions with USDA/WHO food safety guidelines. First system to integrate all aspects of household food management.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Feature Section -->
+    <section class="feature-section reveal" id="research">
+        <div class="feature-container">
+            <div class="feature-image">
+                <div class="feature-img-main">
+                    <img src="images/waste.jpg" alt="Food Waste Challenge" >
+                </div>
+                <div class="feature-badge badge-top">
+                    <div style="font-size: 1.2rem; margin-bottom: 0.3rem;">1/3</div>
+                    <div style="font-size: 0.9rem; opacity: 0.9;">Global Food Wasted</div>
+                </div>
+                <div class="feature-badge badge-bottom">
+                    <div style="font-size: 1.2rem; margin-bottom: 0.3rem;">20-25%</div>
+                    <div style="font-size: 0.9rem; opacity: 0.9;">Waste Reduction</div>
+                </div>
+            </div>
+
+            <div class="feature-content">
+                <div class="section-tag">Research Problem</div>
+                <h2>Tackling Global Food Waste Challenge</h2>
+                <p>
+                    Food waste has emerged as a major global issue, with approximately one-third of all food produced worldwide being discarded. Much of this waste occurs in households due to poor storage practices, misunderstanding of expiration dates, and lack of real-time monitoring.
+                </p>
+                <p>
+                    The environmental impact includes rising greenhouse gas emissions and inefficient resource use. Despite smart home technologies, there's a lack of integrated, user-friendly solutions for real-time food freshness monitoring.
+                </p>
+                <ul class="feature-list">
+                    <li>Hybrid image + gas sensor detection system</li>
+                    <li>ML-powered shelf-life predictions (80% accuracy)</li>
+                    <li>IoT-based storage compatibility monitoring</li>
+                    <li>Health-conscious recipe recommendations</li>
+                    <li>Mobile-first React Native application</li>
+                </ul>
+                <button class="btn-primary" onclick="document.getElementById('methodology').scrollIntoView({behavior: 'smooth'})">Learn More</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Methodology Section -->
+    <section class="methodology-section reveal" id="methodology">
+        <div class="section-header">
+            <div class="section-tag">Methodology</div>
+            <h2 class="section-title">Our Research Approach</h2>
+            <p class="section-description">
+                Four integrated modules powered by AI, IoT, and machine learning
+            </p>
+        </div>
+
+        <div class="methodology-grid">
+            <div class="methodology-card">
+                <div class="methodology-number">1</div>
+                <h3 class="methodology-title">Real-Time Spoilage Detection</h3>
+                <p class="methodology-text">
+                    <strong>Image-Based:</strong> MobileNetV2 model deployed via React Native app captures and classifies food as Fresh or Spoiled with 90% confidence threshold. Uses Flask backend with TensorFlow Lite for mobile optimization.<br><br>
+                    <strong>Gas Sensor-Based:</strong> MQ-135 detects ammonia emissions (NH₃), DHT22 monitors temperature and humidity. ESP32 WiFi module transmits data every 30 minutes via MQTT protocol. Multi-parameter decision rules evaluate spoilage risk.
+                </p>
+            </div>
+
+            <div class="methodology-card">
+                <div class="methodology-number">2</div>
+                <h3 class="methodology-title">Shelf Life Estimation</h3>
+                <p class="methodology-text">
+                    <strong>Fruits/Vegetables:</strong> EfficientNetB2 with custom head and Test-Time Augmentation (TTA) achieves 80% accuracy across 30 freshness stages for 6 foods (apples, bananas, bell peppers, bitter gourds, carrots, tomatoes). Q10 formula adjusts for real-time sensor data.<br><br>
+                    <strong>Homemade Foods:</strong> Rule-based system using USDA/WHO/FDA guidelines (3-4 days fridge, 2 hours room temp for meat curry) + survey data from 100+ people aged 30+.<br><br>
+                    <strong>Packaged Foods:</strong> Tesseract OCR with preprocessing (contrast enhancement, adaptive thresholding) extracts expiry dates with 90% accuracy on 150 samples.
+                </p>
+            </div>
+
+            <div class="methodology-card">
+                <div class="methodology-number">3</div>
+                <h3 class="methodology-title">Storage Compatibility Management</h3>
+                <p class="methodology-text">
+                    IoT sensors (DHT22 for temp/humidity, MQ-135 for ethylene) monitor storage environment. Support Vector Machine (SVM) model with MinMaxScaler predicts spoilage risk (Will Spoil/Will Not Spoil). Rule-based compatibility matrix identifies incompatible food pairings (e.g., ethylene producers vs. sensitive items). RNN-based temporal analysis forecasts spoilage trends using historical data. Critical alerts sent when ethylene exceeds 0.5 ppm near sensitive items.
+                </p>
+            </div>
+
+            <div class="methodology-card">
+                <div class="methodology-number">4</div>
+                <h3 class="methodology-title">Recipe Suggestion System</h3>
+                <p class="methodology-text">
+                    TensorFlow Keras food risk model considers user health factors: allergies, BMI, cholesterol, blood pressure, lifestyle habits (alcohol, smoking). TF-IDF vectorization with cosine similarity matches expiring ingredients to 1000+ recipes database. Fuzzy matching (RapidFuzz) filters unsafe ingredients. Health-conscious filtering ensures safe recommendations for chronic conditions. Top 5 recipes provided with ingredients, instructions, and health warnings. Reduces waste by prioritizing expiring items.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section reveal">
+        <div class="section-header" style="color: white; margin-bottom: 3rem;">
+            <div class="section-tag" style="color: white; opacity: 0.9;">Achievements</div>
+            <h2 class="section-title" style="color: white;">Key Results & Impact</h2>
+        </div>
+        <div class="stats-container">
+            <div class="stat-item">
+                <div class="stat-icon">🎯</div>
+                <div class="stat-number">85%</div>
+                <div class="stat-label">Spoilage Detection Accuracy</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-icon">⏱️</div>
+                <div class="stat-number">80%</div>
+                <div class="stat-label">Shelf-Life Prediction Accuracy</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-icon">📱</div>
+                <div class="stat-number">90%</div>
+                <div class="stat-label">OCR Success Rate</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-icon">♻️</div>
+                <div class="stat-number">20-25%</div>
+                <div class="stat-label">Food Waste Reduction</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Timeline Section -->
+    <section class="timeline-section reveal" id="milestones">
+        <div class="section-header">
+            <div class="section-tag">Milestones</div>
+            <h2 class="section-title">Timeline in Brief</h2>
+            <p class="section-description">
+                Track our progress from initial proposal to final presentation
+            </p>
+        </div>
+
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <span class="timeline-date">January 2021</span>
+                    <h3>Project Proposal</h3>
+                    <p>A Project Proposal is presented to potential sponsors or clients to receive funding or get your project approved.</p>
+                    <div style="margin-top: 1rem;">
+                        <strong>Marks Allocated:</strong> 6
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 6%">
+                            <span style="padding-left: 0.5rem; color: white; font-size: 0.85rem; font-weight: 700;">6%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <span class="timeline-date">April 2021</span>
+                    <h3>Progress Presentation I</h3>
+                    <p>Progress Presentation I reviews the 50% completion status of the project. This reveals any gaps or inconsistencies in the design/requirements.</p>
+                    <div style="margin-top: 1rem;">
+                        <strong>Marks Allocated:</strong> 6
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 12%">
+                            <span style="padding-left: 0.5rem; color: white; font-size: 0.85rem; font-weight: 700;">6%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+ 
+ 
+ <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <span class="timeline-date"> July 2025</span>
+                    <h3>Research Paper</h3>
+                    <p>Describes what you contribute to existing knowledge, giving due recognition to all work that you referred in making new knowledge.</p>
+                    <div style="margin-top: 1rem;">
+                        <strong>Marks Allocated:</strong> 10
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 27%">
+                            <span style="padding-left: 0.5rem; color: white; font-size: 0.85rem; font-weight: 700;">10%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <span class="timeline-date">September 2025</span>
+                    <h3>Progress Presentation II</h3>
+                    <p>Progress Presentation II reviews the 90% completion status of the project. This reveals any gaps or inconsistencies in the design/requirements.</p>
+                    <div style="margin-top: 1rem;">
+                        <strong>Marks Allocated:</strong> 18
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 37%">
+                            <span style="padding-left: 0.5rem; color: white; font-size: 0.85rem; font-weight: 700;">18%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+			
+			 <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <span class="timeline-date">Octomber 2025</span>
+                    <h3>Website Assessement</h3>
+                    <p>The Website helps to promote our research project and reveals all details related to the project.</p>
+                    <div style="margin-top: 1rem;">
+                        <strong>Marks Allocated:</strong> 2
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 55%">
+                            <span style="padding-left: 0.5rem; color: white; font-size: 0.85rem; font-weight: 700;">2%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+			 <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <span class="timeline-date">Octomber 2025</span>
+                    <h3>Logbook</h3>
+                    <p>Status of the project is validated through the Logbook. This also includes, Status documents 1 & 2.</p>
+                    <div style="margin-top: 1rem;">
+                        <strong>Marks Allocated:</strong> 3
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 57%">
+                            <span style="padding-left: 0.5rem; color: white; font-size: 0.85rem; font-weight: 700;">3%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+			
+			<div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <span class="timeline-date">July 2025</span>
+                    <h3>Final Report</h3>
+                    <p>Final Report evalutes the completed project done throughout the year. Marks mentioned below includes marks for Individual & group reports and also Final report.</p>
+                    <div style="margin-top: 1rem;">
+                        <strong>Marks Allocated:</strong> 19
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 61%">
+                            <span style="padding-left: 0.5rem; color: white; font-size: 0.85rem; font-weight: 700;">19%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <span class="timeline-date">October 2025</span>
+                    <h3>Final Presentation & Viva</h3>
+                    <p>Viva is held individually to assess each members contribution to the project.</p>
+                    <div style="margin-top: 1rem;">
+                        <strong>Marks Allocated:</strong> 20
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 100%">
+                            <span style="padding-left: 0.5rem; color: white; font-size: 0.85rem; font-weight: 700;">20%</span>
+                        </div>
+                    </div>
+                    <span class="milestone-badge" style="margin-top: 1rem; display: inline-block;">Completed ✓</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technologies Section -->
+    <section class="tech-section reveal" id="technologies">
+        <div class="section-header">
+            <div class="section-tag">Technologies</div>
+            <h2 class="section-title">Technologies Used</h2>
+            <p class="section-description">
+                Cutting-edge technologies powering our intelligent food monitoring system
+            </p>
+        </div>
+
+        <div class="tech-grid">
+            <div class="tech-card">
+                <div class="tech-icon-wrapper">
+                    <img src="images/react native.jpg" alt="React Native" onerror="this.parentElement.innerHTML='⚛️'">
+                </div>
+                <div class="tech-name">React Native</div>
+            </div>
+            <div class="tech-card">
+                <div class="tech-icon-wrapper">
+                    <img src="images/python.jpg" alt="Python" onerror="this.parentElement.innerHTML='🐍'">
+                </div>
+                <div class="tech-name">Python</div>
+            </div>
+            <div class="tech-card">
+                <div class="tech-icon-wrapper">
+                    <img src="images/tensor flow.png" alt="TensorFlow" onerror="this.parentElement.innerHTML='🧠'">
+                </div>
+                <div class="tech-name">TensorFlow</div>
+            </div>
+            <div class="tech-card">
+                <div class="tech-icon-wrapper">
+                    <img src="images/keras.png" alt="Keras" onerror="this.parentElement.innerHTML='🔷'">
+                </div>
+                <div class="tech-name">Keras</div>
+            </div>
+            <div class="tech-card">
+                <div class="tech-icon-wrapper">
+                    <img src="images/flask.png" alt="Flask" onerror="this.parentElement.innerHTML='⚡'">
+                </div>
+                <div class="tech-name">Flask</div>
+            </div>
+            <div class="tech-card">
+                <div class="tech-icon-wrapper">
+                    <img src="images/mongo db.jpg" alt="MongoDB" onerror="this.parentElement.innerHTML='🍃'">
+                </div>
+                <div class="tech-name">MongoDB</div>
+            </div>
+           
+            <div class="tech-card">
+                <div class="tech-icon-wrapper">
+                    <img src="images/expo.png" alt="Expo" onerror="this.parentElement.innerHTML='📱'">
+                </div>
+                <div class="tech-name">Expo</div>
+            </div>
+           
+            <div class="tech-card">
+                <div class="tech-icon-wrapper">
+                    <img src="images/esp 32.jpg" alt="ESP32" onerror="this.parentElement.innerHTML='📡'">
+                </div>
+                <div class="tech-name">ESP32</div>
+            </div>
+            <div class="tech-card">
+                <div class="tech-icon-wrapper">
+                    <img src="images/dht 22.jpg" alt="DHT22 Sensor" onerror="this.parentElement.innerHTML='🌡️'">
+                </div>
+                <div class="tech-name">DHT22 Sensor</div>
+            </div>
+            <div class="tech-card">
+                <div class="tech-icon-wrapper">
+                    <img src="images/tech/mq.jpg" alt="MQ-135 Sensor" onerror="this.parentElement.innerHTML='💨'">
+                </div>
+                <div class="tech-name">MQ-135 Sensor</div>
+            </div>
+            <div class="tech-card">
+                <div class="tech-icon-wrapper">
+                    <img src="images/ocr.png" alt="Tesseract OCR" onerror="this.parentElement.innerHTML='📝'">
+                </div>
+                <div class="tech-name">Tesseract OCR</div>
+            </div>
+            
+            <div class="tech-card">
+                <div class="tech-icon-wrapper">
+                    <img src="images/efficient net.jpg" alt="EfficientNetB2" onerror="this.parentElement.innerHTML='🎯'">
+                </div>
+                <div class="tech-name">EfficientNetB2</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Downloads Section -->
+    <section class="downloads-section reveal" id="downloads">
+        <div class="section-header">
+            <div class="section-tag">Downloads</div>
+            <h2 class="section-title">Documents & Presentations</h2>
+            <p class="section-description">
+                Access all project documents, research papers, and presentations
+            </p>
+        </div>
+
+        <div class="downloads-grid">
+  <div class="download-card">
+    <div class="download-icon">📄</div>
+    <h3 class="download-title">Project Proposal</h3>
+    <p class="download-desc">Initial project proposal with research objectives and methodology</p>
+    <a href="files/Project_Proposal.pdf" class="download-btn" download>Download PDF</a>
+  </div>
+
+  <div class="download-card">
+    <div class="download-icon">📊</div>
+    <h3 class="download-title">Progress Presentation I</h3>
+    <p class="download-desc">50% completion review - design validation and requirements</p>
+    <a href="files/Progress_Presentation_I.pdf" class="download-btn" download>Download PPT</a>
+  </div>
+
+  <div class="download-card">
+    <div class="download-icon">📈</div>
+    <h3 class="download-title">Progress Presentation II</h3>
+    <p class="download-desc">90% completion review - system integration and testing</p>
+    <a href="files/Progress_Presentation_II.pdf" class="download-btn" download>Download PPT</a>
+  </div>
+
+  <div class="download-card">
+    <div class="download-icon">📑</div>
+    <h3 class="download-title">Final Presentation</h3>
+    <p class="download-desc">Completion review - architecture and testing overview</p>
+    <a href="files/Final_Presentation.pdf" class="download-btn" download>Download PDF</a>
+  </div>
+
+  <div class="download-card">
+    <div class="download-icon">🔬</div>
+    <h3 class="download-title">Research Paper</h3>
+    <p class="download-desc">Published research paper with findings, results, and analysis</p>
+    <a href="files/Research_Paper.pdf" class="download-btn" download>Download PDF</a>
+  </div>
+
+  <div class="download-card">
+    <div class="download-icon">🖼️</div>
+    <h3 class="download-title">Final Documentation</h3>
+    <p class="download-desc">Complete system documentation, architecture, and user manual</p>
+    <a href="files/Final_Documentation.pdf" class="download-btn" download>Download PDF</a>
+  </div>
+</div>
+
+    </section>
+
+    <!-- Team Section -->
+    <section class="team-section reveal" id="team">
+        <div class="section-header">
+            <div class="section-tag">About Us</div>
+            <h2 class="section-title">Meet Our Team</h2>
+            <p class="section-description">
+                Dedicated researchers from SLIIT Faculty of Computing - Group R25-73
+            </p>
+        </div>
+
+        <div class="team-grid">
+            <div class="team-card">
+                <div class="team-image-wrapper">
+                    <img src="images/epuni.PNG" alt="Perera P A E U K" onerror="this.parentElement.innerHTML='👨‍💻'">
+                </div>
+                <div class="team-info">
+                    <h3 class="team-name">Perera P A E U K</h3>
+                    <p class="team-id">IT21829710</p>
+                    <span class="team-role">Team Member</span>
+                    <div class="team-details">
+                        <p><strong>Email:</strong> it21829710@my.sliit.lk</p>
+                        <p><strong>Focus:</strong> Real-Time Spoilage Detection System</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="team-card">
+                <div class="team-image-wrapper">
+                    <img src="images/sanduni.png" alt="Kularathna E.M.S.D" onerror="this.parentElement.innerHTML='👨‍💻'">
+                </div>
+                <div class="team-info">
+                    <h3 class="team-name">Kularathna E.M.S.D</h3>
+                    <p class="team-id">IT21828720</p>
+                    <span class="team-role">Team Member</span>
+                    <div class="team-details">
+                        <p><strong>Email:</strong> it21828720@my.sliit.lk</p>
+                        <p><strong>Focus:</strong> Shelf Life Estimation Module</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="team-card">
+                <div class="team-image-wrapper">
+                    <img src="images/chamika.PNG" alt="Perera B.B.C.V" onerror="this.parentElement.innerHTML='👨‍💻'">
+                </div>
+                <div class="team-info">
+                    <h3 class="team-name">Perera B.B.C.V</h3>
+                    <p class="team-id">IT20196110</p>
+                    <span class="team-role">Team Member</span>
+                    <div class="team-details">
+                        <p><strong>Email:</strong> it20196110@my.sliit.lk</p>
+                        <p><strong>Focus:</strong> Storage Compatibility Management</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="team-card">
+                <div class="team-image-wrapper">
+                    <img src="images/anjana.JPG" alt="Fernando M.G.S.S.A" onerror="this.parentElement.innerHTML='👨‍💻'">
+                </div>
+                <div class="team-info">
+                    <h3 class="team-name">Fernando M.G.S.S.A</h3>
+                    <p class="team-id">IT19970882</p>
+                    <span class="team-role">Team Member</span>
+                    <div class="team-details">
+                        <p><strong>Email:</strong> it19970882@my.sliit.lk</p>
+                        <p><strong>Focus:</strong> Recipe Suggestion System</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="team-card">
+                <div class="team-image-wrapper">
+                    <img src="images/predeep.jpeg" alt="Mr. Abeygunawardhana P.K.W" onerror="this.parentElement.innerHTML='👨‍🏫'">
+                </div>
+                <div class="team-info">
+                    <h3 class="team-name">Mr. Abeygunawardhana P.K.W</h3>
+                    <span class="team-role">Supervisor</span>
+                    <div class="team-details">
+                        <p><strong>Email:</strong> pradeep.a@sliit.lk</p>
+                        <p><strong>Institution:</strong> SLIIT Faculty of Computing</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="team-card">
+                <div class="team-image-wrapper">
+                    <img src="images/samadhi.jpeg" alt="Ms. Rathnayake H.M.S.C" onerror="this.parentElement.innerHTML='👩‍🏫'">
+                </div>
+                <div class="team-info">
+                    <h3 class="team-name">Ms. Rathnayake H.M.S.C</h3>
+                    <span class="team-role">Co-Supervisor</span>
+                    <div class="team-details">
+                        <p><strong>Email:</strong> samadhi.r@sliit.lk</p>
+                        <p><strong>Institution:</strong> SLIIT Faculty of Computing</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section reveal" id="contact">
+        <div class="contact-container">
+            <div class="section-header">
+                <div class="section-tag">Contact Us</div>
+                <h2 class="section-title">Get in Touch</h2>
+                <p class="section-description">
+                    Have questions about our research? We'd love to hear from you
+                </p>
+            </div>
+
+            <form onsubmit="handleSubmit(event)">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" placeholder="Your Name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="your.email@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="subject">Subject</label>
+                    <input type="text" id="subject" placeholder="Research Inquiry" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" rows="5" placeholder="Your message here..." required></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Send Message</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-grid">
+                <div>
+                    <div class="footer-logo">
+                        <span>🍎</span>
+                        <span>FoodShelf AI</span>
+                    </div>
+                    <p class="footer-desc">
+                        Intelligent Food Shelf Life Monitoring System - Reducing household food waste through AI, IoT, and machine learning technology.
+                    </p>
+                    <p style="margin-top: 1rem;"><strong>Group Number:</strong> R25-73</p>
+                </div>
+                <div>
+                    <h4 class="footer-title">Project</h4>
+                    <ul class="footer-links">
+                        <li><a href="#services">Core Modules</a></li>
+                        <li><a href="#scope">Project Scope</a></li>
+                        <li><a href="#methodology">Methodology</a></li>
+                        <li><a href="#milestones">Milestones</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="footer-title">Resources</h4>
+                    <ul class="footer-links">
+                        <li><a href="#technologies">Technologies</a></li>
+                        <li><a href="#downloads">Downloads</a></li>
+                        <li><a href="#team">Our Team</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="footer-title">Institution</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">SLIIT</a></li>
+                        <li><a href="#">Faculty of Computing</a></li>
+                        <li><a href="#">Research</a></li>
+                        <li><a href="#">Documentation</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Intelligent Food Shelf Life Monitoring System. All rights reserved.</p>
+                <p style="margin-top: 0.5rem; font-size: 0.9rem;">Sri Lanka Institute of Information Technology</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        function toggleMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
+
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('navLinks').classList.remove('active');
+            });
+        });
+
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Form submission
+        function handleSubmit(event) {
+            event.preventDefault();
+            alert('Thank you for your message! We will get back to you soon.');
+            event.target.reset();
+        }
+
+        // Scroll reveal animation
+        function reveal() {
+            const reveals = document.querySelectorAll('.reveal');
+            
+            reveals.forEach(element => {
+                const windowHeight = window.innerHeight;
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 100;
+                
+                if (elementTop < windowHeight - elementVisible) {
+                    element.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', reveal);
+        reveal(); // Check on load
+
+        // Navbar shadow on scroll
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.style.boxShadow = '0 4px 30px rgba(0, 0, 0, 0.1)';
+            } else {
+                nav.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.05)';
+            }
+        });
+
+        // Parallax effect for blobs
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const blobs = document.querySelectorAll('.blob');
+            blobs.forEach((blob, index) => {
+                const speed = 0.5 + (index * 0.1);
+                blob.style.transform = `translateY(${scrolled * speed}px)`;
+            });
+        });
+    </script>
+</body>
+</html>
